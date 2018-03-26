@@ -1,0 +1,33 @@
+import json 
+
+class Bdd:
+    def __init__(self,fichier):
+        with open(fichier,"r") as fd:
+            self.data=json.load(fd)
+            self.vars=donnees.data[0].keys()
+#    def ajouter:
+#        
+#    def retirer :
+        
+    def afficher_ligne(self,indice_ligne):
+        print("|"+"obs  "+"|",end='')
+        for cle in self.vars:
+            print (cle + "     |",end='')
+        print('')
+        print('|'+str(indice_ligne)+' '*(5-len(str(indice_ligne)))+'|',end='')
+        
+        for cle in self.vars:
+            print (str(self.data[indice_ligne][cle]) +' '*((len(cle)+5)-len(str(self.data[indice_ligne][cle]) ))+'|',end='')
+     
+    def afficher_lignes(self,nb_lignes):
+        print("|"+"obs  "+"|",end='')
+        for cle in self.vars:
+            print (cle + "     |",end='')
+        for i in range(nb_lignes):
+            print('')
+            print('|'+str(i)+' '*(5-len(str(i)))+'|',end='')
+            for cle in self.vars:
+                print (str(self.data[i][cle]) +' '*((len(cle)+5)-len(str(self.data[i][cle]) ))+'|',end='')
+            
+            
+donnees=Bdd("vinData.json")
