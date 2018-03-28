@@ -1,18 +1,23 @@
 import json 
 
 class Bdd:
+    
     def __init__(self,fichier):
+        #Constructeur de la classe Bdd : data est une liste de dictionnaires et vars la liste des clés du dictionnaire
         with open(fichier,"r") as fd:
             self.data=json.load(fd)
             self.vars=self.data[0].keys()
             
     def ajouter(self,vin):
+        #Permet d'ajouter un vin à la base
         self.data.append(vin)
         
     def retirer(self,indice) :
+        #Permet de retirer un vin à la base
         del self.data[indice]
                 
     def afficher_lignes(self,liste_indices):
+        #Affiche les observations correspondant aux indices de liste_indices
         print("|"+"obs  "+"|",end='')
         for cle in self.vars:
             if len(cle +"  ")<7:
@@ -35,7 +40,9 @@ class Bdd:
                         print (str(self.data[i][cle]) +' '*((len(cle)+1)-len(str(self.data[i][cle]) ))+'|',end='')
             
     def __str__(self):
+        #Affiche tous les vins de la base
         self.afficher_lignes([i for i in range(len(self.data))])
+        
         
             
 donnees=Bdd("vinData.json")
@@ -44,6 +51,8 @@ vars=['citric acid','wine identity','residual sugar','quality','total sulfur dio
  'pH','type','alcohol','density','fixed acidity','chlorides','sulphates','free sulfur dioxide']
 
 class Contrainte:
+    # Les contraintes sont définient par la variable utilisée pour la sélection, le signe (<,>,=), et la valeur
+    
     def __init__(self,var,signe,valeur):
         self.var=var                            #Compris entre 0 et 13
         self.signe=signe                        #0 : inférieur   1 : égale   2 : supérieur 
@@ -57,4 +66,14 @@ class Contrainte:
         if self.signe==2:
             return(vars[self.var]+' > '+str(self.valeur))
     
+    
 c1=Contrainte(6,1,3.51)
+
+
+def selection(base,contrainte):
+    indices=[]
+    if contrainte.signe==1:
+        for i in range (len(base.data)):
+            if base.data[i][vars[contrainte.var]]==contrainte.valeur:
+                indices.append(i)
+    return indices
