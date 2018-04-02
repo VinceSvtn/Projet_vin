@@ -1,0 +1,178 @@
+class Cluster:
+    
+    """Classe permettant de représenter plusieurs vins au sein d'un objet unique appelé 'Cluster'.
+    Elle contient plusieurs méthodes, dont la fonction kmeans : int -> list qui applique la méthode des
+    k-means au cluster courant"""
+    
+    
+    
+    
+    def __init__(self,donnees,selection):
+        
+        """Constructeur de la classe :
+        donnees : une instance de la classe Bdd
+        selection : une liste d'indices correspondant aux vins sélectionnés pour faire le clustering
+        
+        Renvoie une liste de listes à 14 éléments correspondantes aux vins présents dans le cluster"""
+        
+        vins = []
+        m = 0
+        for i in selection:
+            vins.append([])
+            for j in range(14):
+                vins[m].append(donnees.data[i][j])
+            m += 1
+            
+        self.vins = vins
+            
+            
+            
+            
+    def distance(self,i,centre):
+        
+        """Cette fonction renvoie la distance entre les i-ème point du cluster et un centre donné (sous
+        forme d'une liste de 14 éléments).
+        point1, point2 : deux éléments du cluster de 14 éléments (chaque élément correspond à une
+        caractéristique des vins i et j)"""
+    
+        "Fonction à compléter ; il y a des variables qualis, donc on ne peut pas choisir une simple distance
+        "euclidienne...
+        "ATTENTION : 'wine identity' ne doit pas être prise en compte dans le calcul"
+    
+    
+        
+        
+    def choixCentresInitiaux(self):
+        
+        """Il existe plusieurs façons de choisir les k centres initiaux, la plus simple étant de les choisir
+        aléatoirement. 
+        
+        Cette méthode renvoie une liste de k centres.
+        
+        Chaque centre est en fait une liste de 14 éléments, chaque élément étant une caractéristique du vin
+        (on ne s'intéresse toujours pas à "wine identity" ici, mais on le laisse quand même dans la liste
+        pour ne pas décaler tous les indices)"""
+        
+        
+        "Fonction à compléter"
+        
+        
+        
+    
+    def centreCluster(self):
+        
+        """Détermine le centre du cluster courant"""
+        
+        "Fonction à compléter"
+        "ATTENTION : ne pas prendre 'wine identity' en compte dans les calculs"
+        
+        
+    def affichageCluster(self):
+        
+        """Affiche la liste des 'wine identity' présents dans le cluster courant"""
+        
+        for i in range(len(self.vins)):
+            print(self.vins[i][0])
+        
+        
+        
+    def kmeans(self,k):
+        
+        """Met en oeuvre la méthode des k-means. Renvoie une liste de k listes contenant des vins 
+        appartenant à un meme groupe"""
+        
+        
+        "On construit une liste, mise à jour à chaque étape, qui contiendra les centres des clusters"
+        
+        c = self.choixCentresInitiaux()
+        
+        
+        "On construit ensuite une liste, mise à jour à chaque étape qui contiendra les k clusters"
+        
+        l0 = []
+        "l0 ne fait que stocker k listes d'entiers, chaque entier étant associés à une 'wine identity'"
+        
+        for i in range(k):
+            l0.append([])
+            
+        for i in range(len(self.vins)):
+            d = distance(i,self.vins[i],c[0])
+            groupe = 0
+            for j in range(k):
+                if distance(self.vins[i],c[k]) < d:
+                    d = distance(self.vins[i],c[k])
+                    groupe = k
+            l0[groupe].append(self.vins[i][0])
+            
+        
+        "On transforme les sous-listes de l en clusters, pour pouvoir leur appliquer les méthodes définies"
+        "Cela permettra d'appliquer à ces 'sous-clusters' les méthodes de la classe"
+        
+        kclusters = []    
+        for i in range(k):
+            kclusters.append(Cluster(donnees,l0[i]))
+            
+            
+        "kclusters2 sera, dans la suite, la liste de k clusters à l'étape suivante"
+        "On va la créer une première fois ici"
+        
+        l0 = []
+        for i in range(k):
+            l0.append([])
+        
+        "l0 va contenir k sous-listes contenant chacune des 'wine identity'"
+        
+        kclusters2 = []
+        for i in range(k):
+            kclusters2.append(Cluster(donnees,[]))
+            
+        for i in range(k):
+            c[k] = kclusters[i].centreCluster()
+            
+        for i in range(k):
+            for j in range(len(kclusters[i].vins)):
+                d = distance(kclusters[i].vins[j],c[0])
+                groupe = 0
+                for m in range(k):
+                    if distance(kclusters[i].vins[j],c[m]) < d:
+                        d = distance(self.vins[i],c[m])
+                        groupe = m
+                l0[groupe].append(self.vins[i][0])
+            
+        "On obtient ensuite kclusters2, liste d'instances de la classe Cluster, grâce à l"
+        for i in range(k):
+            kclusters2 = Cluster(donnees,l0[i])
+        
+            
+                
+        "Tant que les vins ne sont pas figés dans une classe, on réitère le processus"
+        
+        
+        while(kclusters2 != kclusters): 
+        
+            kclusters = kclusters2
+            
+            l = []
+            for i in range(k):
+                l.append([])
+        
+            for i in range(k):
+                c[k] = kclusters[i].centreCluster()
+            
+            for i in range(k):
+                for j in range(len(kclusters[i].vins)):
+                    d = distance(kclusters[i].vins[j],c[0])
+                    groupe = 0
+                    for m in range(k):
+                        if distance(kclusters[i].vins[j],c[m]) < d:
+                            d = distance(self.vins[i],c[m])
+                            groupe = m
+                    l[groupe].append(self.vins[i][0])
+            
+            "On obtient ensuite kclusters2, instance de la classe Cluster, grâce à l"
+            for i in range(k):
+                kclusters2 = Cluster(donnees,l[i])
+                
+                
+        return kclusters
+            
